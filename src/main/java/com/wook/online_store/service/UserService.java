@@ -4,6 +4,7 @@ import com.wook.online_store.dto.CustomUserDetails;
 import com.wook.online_store.dto.UserRegistDTO;
 import com.wook.online_store.entity.User;
 import com.wook.online_store.repository.UserRepository;
+import com.wook.online_store.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,10 +26,9 @@ public class UserService {
     }
 
     public void registerUser(UserRegistDTO userDTO) {
-
-        if (userRepository.existsByEmail(userDTO.getEmail())) {
-            return;
-        }
+        // 유효성 검사
+        UserValidator validator = new UserValidator(userRepository);
+        validator.validateUserRegistration(userDTO);
 
         User user = new User();
         user.setEmail(userDTO.getEmail());
