@@ -1,5 +1,6 @@
 package com.wook.online_store.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +9,10 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -17,6 +21,7 @@ import java.util.Date;
 @Entity
 public class User {
     @Id
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -24,6 +29,7 @@ public class User {
     private String email;
 
     @Column(nullable = false)
+    @JsonIgnore // 민감한 데이터를 노출시키지 않게 하기 위해
     private String password;
 
     @Column(nullable = false)
@@ -38,18 +44,18 @@ public class User {
     @Column
     private String profileImageUrl;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @UpdateTimestamp
-    @Column(nullable = false)
-    private Date updatedAt;
+    @ManyToMany
+    @JoinTable(name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
-    @Column(nullable = false)
-    private String role;
-
+    public void addRole(Role role) {
+        roles.add(role);
+    }
 
 }

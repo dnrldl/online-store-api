@@ -1,4 +1,4 @@
-package com.wook.online_store.exection;
+package com.wook.online_store.exception;
 
 public class InvalidPasswordException extends RuntimeException {
     public InvalidPasswordException(String message) {

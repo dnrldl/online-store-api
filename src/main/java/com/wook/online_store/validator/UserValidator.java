@@ -1,10 +1,10 @@
 package com.wook.online_store.validator;
 
 import com.wook.online_store.dto.UserRegistDTO;
-import com.wook.online_store.exection.EmailAlreadyExistsException;
-import com.wook.online_store.exection.InvalidPasswordException;
-import com.wook.online_store.exection.PhoneNumberAlreadyExistsException;
-import com.wook.online_store.exection.UsernameAlreadyExistsException;
+import com.wook.online_store.exception.EmailAlreadyExistsException;
+import com.wook.online_store.exception.InvalidPasswordException;
+import com.wook.online_store.exception.PhoneNumberAlreadyExistsException;
+import com.wook.online_store.exception.UsernameAlreadyExistsException;
 import com.wook.online_store.repository.UserRepository;
 
 public class UserValidator {
