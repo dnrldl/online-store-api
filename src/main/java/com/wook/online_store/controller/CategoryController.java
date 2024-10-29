@@ -1,6 +1,6 @@
 package com.wook.online_store.controller;
 
-import com.wook.online_store.entity.Category;
+import com.wook.online_store.domain.Category;
 import com.wook.online_store.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

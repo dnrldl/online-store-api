@@ -1,4 +1,4 @@
-package com.wook.online_store.entity;
+package com.wook.online_store.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -7,18 +7,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
+@Table(name = "user")
 public class User {
     @Id
     @Column(name = "user_id")
@@ -57,5 +55,4 @@ public class User {
     public void addRole(Role role) {
         roles.add(role);
     }
-
 }

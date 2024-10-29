@@ -1,6 +1,6 @@
 package com.wook.online_store.config;
 
-import com.wook.online_store.entity.Role;
+import com.wook.online_store.domain.Role;
 import com.wook.online_store.repository.RoleRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -12,9 +12,7 @@ public class RoleInitializer {
     @Bean
     public CommandLineRunner initRoles(RoleRepository roleRepository) {
         return args -> {
-            if (roleRepository.count() != 2) {
-                roleRepository.deleteAll();
-
+            if (roleRepository.count() == 0) {
                 Role userRole = new Role();
                 userRole.setRoleId(1L);
                 userRole.setName("ROLE_USER");

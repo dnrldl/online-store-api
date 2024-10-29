@@ -1,4 +1,4 @@
-package com.wook.online_store.entity;
+package com.wook.online_store.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,6 +14,4 @@ public class Category {
 
     @Column(nullable = false, unique = true)
     private String name;
-
-    private String description;
 }

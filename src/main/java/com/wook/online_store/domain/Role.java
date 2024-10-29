@@ -1,4 +1,4 @@
-package com.wook.online_store.entity;
+package com.wook.online_store.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 public class Role {
     @Id
-    @Column(name = "rold_id")
+    @Column(name = "role_id")
     private Long roleId;
 
     @Column(nullable = false)

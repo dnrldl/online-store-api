@@ -1,6 +1,6 @@
 package com.wook.online_store.repository;
 
-import com.wook.online_store.entity.User;
+import com.wook.online_store.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

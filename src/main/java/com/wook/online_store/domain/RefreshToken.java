@@ -1,4 +1,4 @@
-package com.wook.online_store.entity;
+package com.wook.online_store.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -11,7 +11,8 @@ import lombok.*;
 public class UserRegistDTO {
 
     @NotEmpty
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+    message = "알맞은 이메일 형식이어야 합니다.")
     private String email;
 
     @NotEmpty

@@ -1,6 +1,6 @@
 package com.wook.online_store.service;
 
-import com.wook.online_store.entity.Product;
+import com.wook.online_store.domain.Product;
 import com.wook.online_store.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
