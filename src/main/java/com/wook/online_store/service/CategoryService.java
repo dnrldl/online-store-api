@@ -27,7 +27,6 @@ public class CategoryService {
 
     // 카테고리 수정하기
     public Category updateCategory(Long id, Category categoryDetails) {
-
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found with id " + id));
         category.setName(categoryDetails.getName());
@@ -40,7 +39,13 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
+    public Category getCategory(String categoryName) {
+        return categoryRepository.findByName(categoryName).orElseThrow();
+    }
+
+    @Transactional(readOnly = true)
     public List<Category> getCategories() {
+
         return categoryRepository.findAll();
     }
 }

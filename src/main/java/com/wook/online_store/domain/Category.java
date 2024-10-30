@@ -3,6 +3,9 @@ package com.wook.online_store.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "category")
 @Getter
@@ -15,7 +18,10 @@ public class Category {
     @Column(nullable = false, unique = true)
     private String name;
 
-//    @Column(nullable = false)
-//    @Enumerated(EnumType.STRING)
-//    private GenderType gender;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Category parent;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    private Set<Category> subcategories = new HashSet<>();
 }

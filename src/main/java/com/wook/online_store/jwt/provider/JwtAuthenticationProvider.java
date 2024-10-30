@@ -4,6 +4,8 @@ import com.wook.online_store.jwt.util.JWTUtil;
 import com.wook.online_store.jwt.token.JwtAuthenticationToken;
 import com.wook.online_store.jwt.util.LoginInfoDto;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -32,8 +34,8 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         List<GrantedAuthority> authorities = getGrantedAuthorities(claims);
 
         LoginInfoDto loginInfo = new LoginInfoDto();
-        loginInfo.setUserId(userId);
         loginInfo.setEmail(email);
+        loginInfo.setUserId(userId);
         loginInfo.setName(name);
 
         return new JwtAuthenticationToken(authorities, loginInfo, null);

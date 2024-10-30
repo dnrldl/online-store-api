@@ -20,6 +20,7 @@ public class ProductController {
         return productService.addProduct(addProductDTO);
     }
 
+    // 카테고리가 0(설정을 안하면)이면 아무 제품
     @GetMapping
     public Page<Product> getProducts(@RequestParam(required = false, defaultValue = "0") Long categoryId,
                                      @RequestParam(required = false, defaultValue = "0") int page) {

@@ -6,7 +6,8 @@ import lombok.Data;
 public class AddProductDTO {
     private String title;
     private Double price;
+    private Integer count;
     private String description;
-    private Long categoryId;
+    private String categoryName;
     private String imageUrl;
 }

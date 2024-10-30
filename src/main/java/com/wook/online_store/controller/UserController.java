@@ -94,6 +94,4 @@ public class UserController {
         refreshTokenService.deleteRefreshToken(refreshTokenDTO.getRefreshToken());
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
 }

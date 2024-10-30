@@ -19,6 +19,9 @@ public class Product {
     @Column(nullable = false)
     private double price;
 
+    @Column(nullable = false)
+    private Integer count;
+
     @Column
     private String description;
 
