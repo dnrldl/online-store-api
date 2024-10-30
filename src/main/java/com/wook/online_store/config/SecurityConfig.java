@@ -37,39 +37,27 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // cors(spring security) 설정
-        http
-                .cors((corsCustomizer -> corsCustomizer.configurationSource(corsConfigurationSource())));
-
-        // csrf 비활성화
-        http
-                .csrf(csrf -> csrf.disable());
-
-        // http basic 방식 비활성화
-        http
-                .httpBasic(auth -> auth.disable());
-        http
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/users/**","/login","/reissue").permitAll()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-                );
-
-
-        // form 로그인 방식 비활성화
-        http
-                .formLogin(login -> login.disable());
-
-        http
-                .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(customAuthenticationEntryPoint));
-
-        http
-                .apply(authenticationManagerConfig);
-
         // Stateless 상태 활성화
         http
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        // cors(spring security) 설정
+                .cors((corsCustomizer -> corsCustomizer.configurationSource(corsConfigurationSource())))
+        // csrf 비활성화
+                .csrf(csrf -> csrf.disable())
+        // http basic 방식 비활성화
+                .httpBasic(auth -> auth.disable())
+        // form 로그인 방식 비활성화
+                .formLogin(login -> login.disable())
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/api/users/**","/api/user/login","/api/products/**").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
+                )
+
+                .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
+                        httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(customAuthenticationEntryPoint));
+                authenticationManagerConfig.configure(http);
 
         return http.build();
     }
