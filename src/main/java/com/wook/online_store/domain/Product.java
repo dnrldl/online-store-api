@@ -17,10 +17,10 @@ public class Product {
     private String title;
 
     @Column(nullable = false)
-    private String description;
-
-    @Column(nullable = false)
     private double price;
+
+    @Column
+    private String description;
 
     @ManyToOne
     @JoinColumn(name = "category_id")

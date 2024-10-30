@@ -46,7 +46,7 @@ public class User {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
