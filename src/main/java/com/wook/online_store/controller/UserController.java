@@ -42,7 +42,7 @@ public class UserController {
         user.setEmail(userRegistDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userRegistDTO.getPassword()));
         user.setName(userRegistDTO.getName());
-        user.setUsername(userRegistDTO.getUsername());
+        user.setNickname(userRegistDTO.getNickname());
         user.setPhoneNumber(userRegistDTO.getPhoneNumber());
 
         User saveUser = userService.registerUser(user);
@@ -51,7 +51,7 @@ public class UserController {
         userRegistResDTO.setUserId(saveUser.getId());
         userRegistResDTO.setEmail(saveUser.getEmail());
         userRegistResDTO.setName(saveUser.getName());
-        userRegistResDTO.setUsername(saveUser.getUsername());
+        userRegistResDTO.setNickname(saveUser.getUsername());
         userRegistResDTO.setCreatedAt(saveUser.getCreatedAt());
 
         return new ResponseEntity<>(userRegistResDTO, HttpStatus.CREATED);

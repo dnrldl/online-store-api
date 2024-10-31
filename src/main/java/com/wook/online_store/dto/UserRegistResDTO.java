@@ -9,6 +9,6 @@ public class UserRegistResDTO {
     private Long userId;
     private String email;
     private String name;
-    private String username;
+    private String nickname;
     private LocalDateTime createdAt;
 }

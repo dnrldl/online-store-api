@@ -19,8 +19,8 @@ public class UserValidator {
             throw new EmailAlreadyExistsException("이메일이 이미 존재합니다.");
         }
 
-        if (userRepository.existsByUsername(userDTO.getUsername())) {
-            throw new UsernameAlreadyExistsException("사용자 이름이 이미 존재합니다.");
+        if (userRepository.existsByNickname(userDTO.getNickname())) {
+            throw new UsernameAlreadyExistsException("닉네임이 이미 존재합니다.");
         }
 
         if (!isValidPassword(userDTO.getPassword())) {

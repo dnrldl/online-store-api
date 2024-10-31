@@ -22,7 +22,8 @@ public class JWTUtil {
     public final static Long ACCESS_TOKEN_EXPIRE_COUNT = 30 * 60 * 1000L; // 30 minutes
     public final static Long REFRESH_TOKEN_EXPIRE_COUNT = 7 * 24 * 60 * 60 * 1000L; // 7 days
 
-    public JWTUtil(@Value("${jwt.accessKey}") String accessSecret, @Value("${jwt.refreshKey}") String refreshSecret) {
+    public JWTUtil(@Value("${jwt.accessKey}") String accessSecret,
+                   @Value("${jwt.refreshKey}") String refreshSecret) {
         this.accessSecret = accessSecret.getBytes(StandardCharsets.UTF_8);
         this.refreshSecret = refreshSecret.getBytes(StandardCharsets.UTF_8);
     }
@@ -88,4 +89,4 @@ public class JWTUtil {
     public static Key getSigningKey(byte[] secretKey) {
         return Keys.hmacShaKeyFor(secretKey);
     }
-    }
+}

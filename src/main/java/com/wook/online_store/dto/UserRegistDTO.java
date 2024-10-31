@@ -27,8 +27,8 @@ public class UserRegistDTO {
 
     @NotEmpty
     @Pattern(regexp = "^[a-zA-Z가-힣\\\\s]{2,15}",
-            message = "유저네임은 영문자, 한글, 공백포함 2글자부터 15글자까지 가능합니다.")
-    private String username;
+            message = "닉네임은 영문자, 한글, 공백포함 2글자부터 15글자까지 가능합니다.")
+    private String nickname;
 
     @NotEmpty
     @Pattern(regexp = "^(\\+82-?1[0-9]{1}-?[0-9]{3,4}-?[0-9]{4}|0[1-9]{1}[0-9]{1}-?[0-9]{3,4}-?[0-9]{4})$",
