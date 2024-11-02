@@ -63,7 +63,7 @@ public class DataInitializer {
 
                 // 바지 id=7
                 Category pants = new Category();
-                pants.setName("바지");
+                pants.setName("하의");
                 categoryRepository.save(pants);
 
                 subCategorySave(pants, "데님");

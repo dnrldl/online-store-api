@@ -1,7 +1,7 @@
 package com.wook.online_store.controller;
 
 import com.wook.online_store.domain.Product;
-import com.wook.online_store.dto.AddProductDTO;
+import com.wook.online_store.dto.productDTO;
 import com.wook.online_store.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,8 +16,8 @@ public class ProductController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Product addProduct(@RequestBody AddProductDTO addProductDTO) {
-        return productService.addProduct(addProductDTO);
+    public Product addProduct(@RequestBody productDTO productDTO) {
+        return productService.addProduct(productDTO);
     }
 
     // 카테고리가 0(설정을 안하면)이면 아무 제품
@@ -28,7 +28,7 @@ public class ProductController {
         if (categoryId == 0)
             return productService.getProducts(page, size);
         else
-            return productService.getProducts(categoryId, page, size);
+            return productService.getMajorProducts(categoryId, page, size);
     }
 
     @GetMapping("/{id}")

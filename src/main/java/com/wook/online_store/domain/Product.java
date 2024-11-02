@@ -25,9 +25,13 @@ public class Product {
     @Column
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
-
     private String imageUrl;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "major_category_id")
+    private Category majorCategory;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sub_category_id")
+    private Category subCategory;
 }

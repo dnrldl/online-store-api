@@ -3,6 +3,7 @@ package com.wook.online_store.jwt.filter;
 import com.wook.online_store.jwt.token.JwtAuthenticationToken;
 import com.wook.online_store.jwt.util.JWTUtil;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.FilterChain;
@@ -36,34 +37,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = request.getHeader("Authorization");
+        String token = extractToken(request);
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String jwt = authHeader.substring(7);
-        String subject;
-
-        String token = getToken(request);
         if (StringUtils.hasText(token)) {
             try {
-                JwtAuthenticationToken authenticationToken = new JwtAuthenticationToken(token);
-                Authentication authenticate = authenticationManager.authenticate(authenticationToken);
-
-                SecurityContextHolder.getContext().setAuthentication(authenticate);
-            } catch (ExpiredJwtException e) {
-                log.error("JWT token is expired: {}", e.getMessage());
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT token is expired");
-                return;
-            } catch (MalformedJwtException e) {
-                log.error("JWT token is malformed: {}", e.getMessage());
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT token is malformed");
-                return;
-            } catch (UnsupportedJwtException e) {
-                log.error("JWT token is unsupported: {}", e.getMessage());
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT token is unsupported");
+                Authentication authentication = authenticateToken(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (JwtException e) {
+                handleJwtException(response, e);
                 return;
             } catch (BadCredentialsException e) {
                 log.error("Invalid JWT token: {}", e.getMessage());
@@ -78,12 +59,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String getToken(HttpServletRequest request) {
+    private String extractToken(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
-        if (StringUtils.hasText(authorization) && authorization.startsWith("Bearer")) {
-            String[] arr = authorization.split(" ");
-            return arr[1];
+        System.out.println("authorization = " + authorization);
+        if (StringUtils.hasText(authorization) && authorization.startsWith("Bearer ")) {
+            return authorization.substring(7);
         }
         return null;
+    }
+
+    private Authentication authenticateToken(String token) {
+        JwtAuthenticationToken authenticationToken = new JwtAuthenticationToken(token);
+        return authenticationManager.authenticate(authenticationToken);
+    }
+
+    private void handleJwtException(HttpServletResponse response, JwtException e) throws IOException {
+        String message;
+        if (e instanceof ExpiredJwtException) {
+            message = "JWT token is expired";
+        } else if (e instanceof MalformedJwtException) {
+            message = "JWT token is malformed";
+        } else if (e instanceof UnsupportedJwtException) {
+            message = "JWT token is unsupported";
+        } else {
+            message = "Invalid JWT token";
+        }
+        log.error("{}: {}", message, e.getMessage());
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
     }
 }

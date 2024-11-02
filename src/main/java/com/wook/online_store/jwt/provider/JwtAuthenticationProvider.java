@@ -28,10 +28,11 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
         Claims claims = jwtUtil.parseAccessToken(authenticationToken.getToken());
 
+        List<GrantedAuthority> authorities = getGrantedAuthorities(claims);
+
         String email = claims.getSubject();
         Long userId = claims.get("userId", Long.class);
         String name = claims.get("name", String.class);
-        List<GrantedAuthority> authorities = getGrantedAuthorities(claims);
 
         LoginInfoDto loginInfo = new LoginInfoDto();
         loginInfo.setEmail(email);

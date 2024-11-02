@@ -39,7 +39,7 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-    public Category getCategory(String categoryName) {
+    public Category getSubCategory(String categoryName) {
         return categoryRepository.findByName(categoryName).orElseThrow();
     }
 

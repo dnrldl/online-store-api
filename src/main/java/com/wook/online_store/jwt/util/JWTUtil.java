@@ -28,16 +28,12 @@ public class JWTUtil {
         this.refreshSecret = refreshSecret.getBytes(StandardCharsets.UTF_8);
     }
 
-    /**
-     * AccessToken 생성
-     */
+    // AccessToken 생성
     public String createAccessToken(Long id, String email, String name, List<String> roles) {
         return createToken(id, email, name, roles, ACCESS_TOKEN_EXPIRE_COUNT, accessSecret);
     }
 
-    /**
-     * RefreshToken 생성
-     */
+    // RefreshToken 생성
     public String createRefreshToken(Long id, String email, String name, List<String> roles) {
         return createToken(id, email, name, roles, REFRESH_TOKEN_EXPIRE_COUNT, refreshSecret);
     }
@@ -59,9 +55,7 @@ public class JWTUtil {
                 .compact();
     }
 
-    /**
-     * 토큰에서 유저 아이디 얻기
-     */
+    // 토큰에서 유저 아이디 얻기
     public Long getUserIdFromToken(String token) {
         String[] tokenArr = token.split(" ");
         token = tokenArr[1];

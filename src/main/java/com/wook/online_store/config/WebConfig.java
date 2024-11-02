@@ -1,6 +1,5 @@
 package com.wook.online_store.config;
 
-import com.wook.online_store.jwt.util.IfLoginArgumentResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -24,11 +23,5 @@ public class WebConfig implements WebMvcConfigurer{
                         .allowCredentials(true);
             }
         };
-    }
-
-    // @IfLogin 활성화
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new IfLoginArgumentResolver());
     }
 }

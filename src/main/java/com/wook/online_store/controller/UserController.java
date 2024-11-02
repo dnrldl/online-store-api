@@ -4,14 +4,15 @@ import com.wook.online_store.domain.RefreshToken;
 import com.wook.online_store.domain.Role;
 import com.wook.online_store.dto.*;
 import com.wook.online_store.domain.User;
+import com.wook.online_store.exception.InvalidDataException;
 import com.wook.online_store.jwt.util.JWTUtil;
 import com.wook.online_store.service.RefreshTokenService;
 import com.wook.online_store.service.UserService;
-import io.jsonwebtoken.Claims;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -66,7 +67,7 @@ public class UserController {
         User user = userService.findByEmail(loginDTO.getEmail());
 
         if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            throw new InvalidDataException("잘못된 비밀번호입니다.");
         }
 
         List<String> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toList());
@@ -83,7 +84,7 @@ public class UserController {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .userId(user.getId())
-                .username(user.getUsername())
+                .nickname(user.getNickname())
                 .build();
 
         return new ResponseEntity<>(loginRes, HttpStatus.OK);

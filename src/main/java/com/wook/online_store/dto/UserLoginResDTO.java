@@ -14,5 +14,5 @@ public class UserLoginResDTO {
     private String refreshToken;
 
     private Long userId;
-    private String username;
+    private String nickname;
 }
