@@ -1,23 +1,13 @@
 package com.wook.online_store.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
 
-@Entity
-@Table(name = "role")
-@NoArgsConstructor
-@Getter
-@Setter
-public class Role {
-    @Id
-    @Column(name = "role_id")
-    private Long roleId;
+public enum Role implements GrantedAuthority {
+    ROLE_USER,
+    ROLE_ADMIN;
 
-    @Column(nullable = false)
-    private String name;
+    @Override
+    public String getAuthority() {
+        return name();
+    }
 }

@@ -2,97 +2,95 @@ package com.wook.online_store.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "user")
 public class User implements UserDetails {
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false, unique = true)
     private String email;
-
     @Column(nullable = false)
     @JsonIgnore // 민감한 데이터를 노출시키지 않게 하기 위해
     private String password;
-
     @Column(nullable = false)
     private String name;
-
     @Column(nullable = false, unique = true)
     private String nickname;
-
     @Column(nullable = false, unique = true)
     private String phoneNumber;
-
     @Column
     private String profileImageUrl;
-
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    @ElementCollection(fetch = FetchType.EAGER) // 값 타입 컬렉션을 저장할 때 지정해야 함(별도의 테이블에 저장하는데 사용)
+    @Enumerated(EnumType.STRING)  // Enum 값을 String으로 저장
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    private List<Role> roles;
 
     @Override
-    @JsonIgnore
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return true;
     }
 
     @Override
-    @JsonIgnore
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return true;
     }
 
     @Override
-    @JsonIgnore
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
 
     @Override
-    @JsonIgnore
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return true;
     }
 
+    // SimpleGratedAuthority로 감싸서 반환
+    /**
+     * @return
+     * [
+     *     new SimpleGrantedAuthority("ROLE_USER"),
+     *     new SimpleGrantedAuthority("ROLE_ADMIN")
+     * ]
+     */
     @Override
-    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
-                .map(role -> (GrantedAuthority) () -> role.getName())
-                .toList();
+                .map(role -> new SimpleGrantedAuthority(role.name()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     @Override
     public String getUsername() {
         return email;
-    }
-
-    public void addRole(Role role) {
-        roles.add(role);
     }
 }

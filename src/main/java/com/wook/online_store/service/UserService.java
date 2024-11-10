@@ -2,42 +2,69 @@ package com.wook.online_store.service;
 
 import com.wook.online_store.domain.Role;
 import com.wook.online_store.domain.User;
+import com.wook.online_store.dto.LoginDTO;
+import com.wook.online_store.dto.LoginResponseDTO;
+import com.wook.online_store.dto.UserInfoResponseDTO;
+import com.wook.online_store.dto.UserRegistDTO;
 import com.wook.online_store.exception.DuplicateException;
 import com.wook.online_store.exception.InvalidDataException;
-import com.wook.online_store.repository.RoleRepository;
+import com.wook.online_store.jwt.util.JwtProvider;
 import com.wook.online_store.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final JwtProvider jwtProvider;
+    private final PasswordEncoder passwordEncoder;
+
+    public LoginResponseDTO authenticateUser(LoginDTO loginDTO) {
+        User user = userRepository.findByEmail(loginDTO.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
+            throw new BadCredentialsException("Invalid password");
+        }
+
+        String accessToken = jwtProvider.generateAccessToken(user.getUsername(), user.getRoles());
+        String refreshToken = jwtProvider.generateRefreshToken(user.getUsername());
+
+        return new LoginResponseDTO(accessToken, refreshToken);
+    }
 
     @Transactional
-    public User registerUser(User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
+    public void registerUser(UserRegistDTO userRegistDTO) {
+        if (userRepository.existsByEmail(userRegistDTO.getEmail())) {
             throw new DuplicateException("이미 사용 중인 이메일입니다.");
         }
 
-        if (userRepository.existsByNickname(user.getNickname())) {
+        if (userRepository.existsByNickname(userRegistDTO.getNickname())) {
             throw new DuplicateException("닉네임이 이미 사용 중입니다.");
         }
 
-        if (userRepository.existsByPhoneNumber(user.getPhoneNumber())) {
+        if (userRepository.existsByPhoneNumber(userRegistDTO.getPhoneNumber())) {
             throw new DuplicateException("전화번호가 이미 사용 중입니다.");
         }
 
-        Optional<Role> userRole = roleRepository.findByName("ROLE_USER");
-        user.addRole(userRole.get());
-        User saveUser = userRepository.save(user);
-        return saveUser;
+        User user = User.builder()
+                .email(userRegistDTO.getEmail())
+                .password(passwordEncoder.encode(userRegistDTO.getPassword()))
+                .name(userRegistDTO.getName())
+                .nickname(userRegistDTO.getNickname())
+                .phoneNumber(userRegistDTO.getPhoneNumber())
+                .roles(List.of(Role.ROLE_USER))
+                .build();
+
+        userRepository.save(user);
     }
 
     @Transactional(readOnly = true)
@@ -50,13 +77,21 @@ public class UserService {
         return userRepository.findById(userId);
     }
 
+
     @Transactional(readOnly = true)
-    public Set<Role> getUserRoles(Long userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            return user.getRoles(); // 사용자의 역할 집합을 반환
-        }
-        return Collections.emptySet(); // 사용자가 존재하지 않는 경우 빈 집합 반환
+    public UserInfoResponseDTO getUserInfo(String username) {
+        User user = findByEmail(username);
+
+        UserInfoResponseDTO userInfo = UserInfoResponseDTO.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .nickname(user.getNickname())
+                .phoneNumber(user.getPhoneNumber())
+                .profileImageUrl(user.getProfileImageUrl())
+                .createdAt(user.getCreatedAt())
+                .roles(user.getRoles())
+                .build();
+        return userInfo;
     }
 }
